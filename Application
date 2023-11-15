@@ -1,0 +1,259 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+class BankProcess {
+    String userName;
+    int pinNumber,totalAmount, depositAmount,withdrawalAmount;
+    static int userChoice,accountNumber,continueOrNot;
+    static ArrayList<Integer> accountNumbersList = new ArrayList<>(50);
+    static ArrayList<Integer> pinNumbersList = new ArrayList<>(50);
+    ArrayList<Integer> depositWithdrawalAmountList = new ArrayList<>(50);
+    ArrayList<Integer> totalAmountList = new ArrayList<>(50);
+    ArrayList<String> withdrawalOrDeposit = new ArrayList<>(50);
+    static char characterCompare = 'y';
+    static String menu;
+    static Scanner sc = new Scanner(System.in);
+    public static void drawLine(){
+        System.out.println("---------------------");
+    }
+    public static boolean accountCheck(int checkAccount){
+        for(int c=0;c<accountNumbersList.size();c++) {
+            if (checkAccount== accountNumbersList.get(c)) {
+                System.out.println("Enter your pinNumber number:");
+                int pinNumber_check = sc.nextInt();
+                if(pinNumber_check==pinNumbersList.get(c)) return true;
+                else
+                    return false;
+            }
+        }
+        return false;
+    }
+    public BankProcess() {
+
+    }
+
+    public static int isContinue() {
+        System.out.println("Do you want to continue? Enter y for yes or n for no");
+        menu = sc.next();
+        if (menu.equals(String.valueOf(characterCompare))) {
+            continueOrNot = menu();
+            return continueOrNot;
+        } else {
+            return 7;
+        }
+    }
+
+    public static int menu() {
+        System.out.println("---------------------");
+        System.out.println("menu");
+        System.out.println("------");
+        System.out.println("1.Create Account");
+        System.out.println("2.Bank details of the customers");
+        System.out.println("3.View transaction history");
+        System.out.println("4.Balance Enquiry");
+        System.out.println("5.Deposit");
+        System.out.println("6.Withdrawal");
+        System.out.println("7.Exit");
+        System.out.println("---------------------");
+        System.out.println("Enter the choice:");
+        userChoice= sc.nextInt();
+        return userChoice;
+
+    }
+    public static void failed(){
+        System.out.println("Account check Failed");
+    }
+
+    public void createAccount(int numberForAccountCreation) {
+        System.out.println("---------------------");
+        System.out.println("Account Creation:");
+        System.out.println("---------------------");
+        System.out.println("Enter your name:");
+        userName = sc.next();
+        System.out.println("Enter a pinNumber:");
+        pinNumber = sc.nextInt();
+        System.out.println("Enter the amount:");
+        totalAmount = sc.nextInt();
+        System.out.println("Account created successfully");
+        System.out.println("---------------------");
+        accountNumbersList.add(numberForAccountCreation);
+        pinNumbersList.add(pinNumber);
+    }
+    public void bankDetails(int numberForBankDetails){
+        System.out.println();
+        System.out.println(numberForBankDetails+"                        " + userName + "                     " + totalAmount);
+    }
+    public static int getAccountNumber(){
+        System.out.println("Enter your account number:");
+        accountNumber=sc.nextInt();
+        return accountNumber;
+    }
+    public int deposit(){
+        System.out.println("Customer name:" + userName);
+        System.out.println("Enter the deposit amount:");
+        depositAmount = sc.nextInt();
+        System.out.println("Amount deposited successfully");
+        totalAmount+= depositAmount;
+        System.out.println("Your balance amount:" + totalAmount);
+        System.out.println();
+        return totalAmount;
+    }
+
+    public void depositOrWithdrawal(int amountForDepositWithdrawal,int depositorWithdrawalNumber){
+        if(depositorWithdrawalNumber==1){
+            String deposit="deposit";
+            this.transaction(deposit,this.depositAmount,amountForDepositWithdrawal);
+        }
+        else{
+            String with="withdrawal";
+            this.transaction(with,this.withdrawalAmount,amountForDepositWithdrawal);
+        }
+    }
+    public void transaction(String depositOrWithdrawalNumberAdd,int depositOrWithdrawalAmountAdd,int totalAmountAdd){
+        withdrawalOrDeposit.add(depositOrWithdrawalNumberAdd);
+        depositWithdrawalAmountList.add(depositOrWithdrawalAmountAdd);
+        totalAmountList.add(totalAmountAdd);
+    }
+    public void displayTransaction(){
+        System.out.println("Type of transaction      Deposit/withdrawal amount        balance amount");
+        for(int i=0;i<withdrawalOrDeposit.size();i++){
+            System.out.println(this.withdrawalOrDeposit.get(i)+"                       "+this.depositWithdrawalAmountList.get(i)+"                          "+this.totalAmountList.get(i));
+        }
+    }
+    public int withdrawal(){
+        System.out.println("Customer name:" + userName);
+        System.out.println("Enter the withdrawal amount: ");
+        withdrawalAmount = sc.nextInt();
+        if(withdrawalAmount>totalAmount) {
+            System.out.println("Insufficient amount");
+        }
+        else{
+            totalAmount -= withdrawalAmount;
+            System.out.println("Amount withdrawn successfully");
+
+        }
+        System.out.println("Your balance amount:" + totalAmount);
+        System.out.println();
+
+        return totalAmount;
+    }
+    public void balance(){
+        System.out.println("Customer name:" + userName);
+        System.out.println("Your balance amount:" + totalAmount);
+        System.out.println();
+    }
+
+}
+
+public class BankApplication {
+
+    public static void main(String[] args) {
+        int accountCreation, totalAccounts = 0,n=50,stamount,maximumNoOfAccounts = 50,i=1;
+        int[] arrayOfAccountNumbers;
+        arrayOfAccountNumbers = new int[50];
+        BankProcess w[] = new BankProcess[n];
+        int choice = BankProcess.menu();
+        int accountNumberForTransaction = 0;
+        do {
+
+            switch (choice) {
+                case 1:
+                    if (totalAccounts < maximumNoOfAccounts) {
+                        totalAccounts++;
+                        arrayOfAccountNumbers[totalAccounts] = totalAccounts;
+                        w[i]=new BankProcess();
+                        System.out.println("Account number:" + arrayOfAccountNumbers[totalAccounts]);
+                        w[i].createAccount(i);
+                    }
+                    else {
+                        System.out.println("Maximum account limit reached");
+                    }
+                    choice=BankProcess.isContinue();
+                    i++;
+                    break;
+                case 2:
+                    BankProcess.drawLine();
+                    System.out.println("2.Bank details of the customers:");
+                    BankProcess.drawLine();
+                    if (totalAccounts != 0) {
+                        System.out.println("Customer account no        customer name        balance amount");
+                        for ( i = 1; i <= totalAccounts; i++) {
+                            w[i].bankDetails(i);
+                        }
+                    } else {
+                        System.out.println("No customer accounts");
+                    }
+                    choice=BankProcess.isContinue();
+                    break;
+                case 3:
+                    BankProcess.drawLine();
+                    System.out.println("Transaction history");
+                    BankProcess.drawLine();
+                    if (totalAccounts > 0) {
+                        accountNumberForTransaction =BankProcess.getAccountNumber();
+                    }
+                    if(accountNumberForTransaction<=totalAccounts) {
+                        if (w[accountNumberForTransaction].withdrawalOrDeposit.isEmpty()) {
+                            System.out.println("No transactions found");
+                        } else {
+
+                            if (BankProcess.accountCheck(accountNumberForTransaction)) {
+                                w[accountNumberForTransaction].displayTransaction();
+                            }
+                        }
+                    }
+                    else{
+                        System.out.println("No account found");
+                    }
+                    choice=BankProcess.isContinue();
+                    break;
+                case 4:
+                    BankProcess.drawLine();
+                    System.out.println("__Balance Inquiry__");
+                    BankProcess.drawLine();
+                    accountCreation = BankProcess.getAccountNumber();
+                    if(BankProcess.accountCheck(accountCreation)){
+                        w[accountCreation].balance();
+                    }
+                    else{
+                        BankProcess.failed();
+                    }
+                    choice=BankProcess.isContinue();
+                    break;
+                case 5:
+                    BankProcess.drawLine();
+                    System.out.println("  Deposit  ");
+                    BankProcess.drawLine();
+                    accountCreation = BankProcess.getAccountNumber();
+                    if(BankProcess.accountCheck(accountCreation)){
+                        stamount= w[accountCreation].deposit();
+                        w[accountCreation].depositOrWithdrawal(stamount,1);
+                    }
+                    else{
+                        BankProcess.failed();
+                    }
+                    choice=BankProcess.isContinue();
+                    break;
+                case 6:
+                    BankProcess.drawLine();
+                    System.out.println("  Withdrawal  ");
+                    BankProcess.drawLine();
+                    accountCreation =BankProcess.getAccountNumber();
+                    if(BankProcess.accountCheck(accountCreation)){
+                        stamount= w[accountCreation].withdrawal();
+                        w[accountCreation].depositOrWithdrawal(stamount,2);
+                    }
+                    else{
+                        BankProcess.failed();
+                    }
+                    choice=BankProcess.isContinue();
+                    break;
+                case 7:
+                    System.out.println("Thank u for banking with us");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice");
+                    break;
+            }
+
+        }while(true);
+    }
